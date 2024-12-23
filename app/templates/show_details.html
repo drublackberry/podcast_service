@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ show.title }} - Podcast Service{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-podcast"></i> {{ show.title }}
+        </h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">{{ show.description }}</p>
+        <div class="mb-3">
+            <strong>Publisher:</strong> {{ show.publisher }}<br>
+            <strong>Website:</strong> <a href="{{ show.website }}" target="_blank">{{ show.website }}</a><br>
+            <strong>RSS Feed:</strong> <a href="{{ show.rss_feed }}" target="_blank">{{ show.rss_feed }}</a><br>
+            <strong>Last Updated:</strong> {{ show.last_updated.strftime('%Y-%m-%d %H:%M') if show.last_updated else 'Never' }}
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-list"></i> Episodes
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if episodes %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Published</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for episode in episodes %}
+                        <tr>
+                            <td>{{ episode.title }}</td>
+                            <td>{{ episode.published_at.strftime('%Y-%m-%d') if episode.published_at else 'Unknown' }}</td>
+                            <td>{{ '%d:%02d' % (episode.duration // 60, episode.duration % 60) if episode.duration else 'Unknown' }}</td>
+                            <td>
+                                <span class="badge bg-{{ {
+                                    'pending': 'warning',
+                                    'processing': 'info',
+                                    'completed': 'success',
+                                    'failed': 'danger'
+                                }[episode.transcript_status] }}">
+                                    {{ episode.transcript_status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if episode.audio_url %}
+                                <a href="{{ episode.audio_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No episodes found for this show.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

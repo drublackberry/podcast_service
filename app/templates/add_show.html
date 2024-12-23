@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Add Show - Podcast Service{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-plus"></i> Add New Show
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="listennotes_id" class="form-label">Listen Notes Show ID</label>
+                        <input type="text" class="form-control" id="listennotes_id" name="listennotes_id" required>
+                        <div class="form-text">
+                            Enter the Listen Notes ID for the podcast show you want to add.
+                            You can find this ID in the show's URL on Listen Notes.
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Add Show</button>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Podcast Service{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-broadcast-tower"></i> Shows
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if shows %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Publisher</th>
+                                    <th>Last Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for show in shows %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('main.show_details', show_id=show.listennotes_id) }}">
+                                            {{ show.title }}
+                                        </a>
+                                    </td>
+                                    <td>{{ show.publisher }}</td>
+                                    <td>{{ show.last_updated.strftime('%Y-%m-%d %H:%M') if show.last_updated else 'Never' }}</td>
+                                    <td>
+                                        <a href="{{ show.website }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No shows added yet.</p>
+                {% endif %}
+                
+                <a href="{{ url_for('main.add_show') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Show
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-key"></i> API Tokens
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if tokens %}
+                    {% for token in tokens %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ token.name }}</h6>
+                            <p class="token-info mb-2">{{ token.token }}</p>
+                            <p class="text-muted mb-2">
+                                <small>
+                                    Created: {{ token.created_at.strftime('%Y-%m-%d') }}<br>
+                                    Last used: {{ token.last_used.strftime('%Y-%m-%d %H:%M') if token.last_used else 'Never' }}<br>
+                                    Requests: {{ token.requests_count }}
+                                </small>
+                            </p>
+                            <a href="{{ url_for('main.toggle_token', token_id=token.id) }}" 
+                               class="btn btn-sm {{ 'btn-danger' if token.is_active else 'btn-success' }}">
+                                {{ 'Deactivate' if token.is_active else 'Activate' }}
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No API tokens created yet.</p>
+                {% endif %}
+                
+                <a href="{{ url_for('main.create_token') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create Token
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
